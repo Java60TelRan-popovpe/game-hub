@@ -9,6 +9,7 @@ import PlatformSelector from './components/PlatformSelector'
 import GameQuery from './model/GameQuery'
 import SortSelector from './components/SortSelector'
 import GenreSelector from './components/ui/GenreSelector'
+import {GenreComponentVariants} from './components/GenreList'
 
 function App() {
 const [gameQuery, setGameQuery] = useState<GameQuery>({} as GameQuery);
@@ -23,7 +24,7 @@ const [gameQuery, setGameQuery] = useState<GameQuery>({} as GameQuery);
       </GridItem>
       <Stack hideBelow="md">
         <GridItem area="aside" paddingX="5" >
-         <GenreList
+         <GenreList componentType='list'
             selectedGenre={gameQuery.genreName}
             onSelectGenre={(genreName: string | null) =>
               setGameQuery({ ...gameQuery, genreName })
@@ -39,8 +40,13 @@ const [gameQuery, setGameQuery] = useState<GameQuery>({} as GameQuery);
           selectedPlatform={gameQuery.platform}
         ></PlatformSelector>
         <SortSelector onSelectOrdering={(option) => setGameQuery({ ...gameQuery, ordering: option })} selectedOrdering={gameQuery.ordering}></SortSelector>
-        <Box display={["none","inline-flex", "none"]}>
-        <GenreSelector/>
+        <Box display={["none","inline", "none"]}>
+        <GenreList componentType='menu'
+            selectedGenre={gameQuery.genreName}
+            onSelectGenre={(genreName: string | null) =>
+              setGameQuery({ ...gameQuery, genreName })
+            }
+          />
         </Box>
         <GameGrid gameQuery={gameQuery} />
       </GridItem>
