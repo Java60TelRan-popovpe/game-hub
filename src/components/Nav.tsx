@@ -10,7 +10,7 @@ const Nav: FC<Props> = ({onSubmitText}) => {
   return (
     <HStack justifyContent="space-between">
        <Image src={logo} boxSize={"10"}/>
-       <SearchBar onSubmitText={(text:string)=>onSubmitText(text)}></SearchBar>
+       <SearchBar onSubmitText={onSubmitText}></SearchBar>
        <ColorModeButton/>
     </HStack>
   )

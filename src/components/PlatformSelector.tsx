@@ -11,11 +11,10 @@ interface Props {
 }
 const duration=0.7;
 const PlatformSelector: FC<Props> = ({onSelectPlatform, selectedPlatform}) => {
-    const {error, data:platforms, isLoading} = usePlatform();
-   const [isOpen, setIsOpen] =  useState<boolean>(false)
+  const {error, data:platforms, isLoading} = usePlatform();
+  const [isOpen, setIsOpen] =  useState<boolean>(false)
   return (
     <>
-    
         {isLoading && <Spinner></Spinner>}
         {!error && <Menu.Root onExitComplete={() => setIsOpen(false)}>
       <Menu.Trigger asChild>
