@@ -5,6 +5,7 @@ import { Genre } from "../model/fetch-genre-types";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import MotionComponent from "./MotionComponent";
 
+
 interface GenreListProps {
   selectedGenre: string | null;
   genres: Genre[];
@@ -14,7 +15,7 @@ const GenreAsList: FC<GenreListProps> = ({selectedGenre, genres, onSelectGenre})
   return (
     <List.Root listStyle="none" maxHeight="85vh" overflow="auto">
       {genres.map((g) => (
-        <List.Item key={g.id}>
+        <List.Item key={g.slug}>
           <HStack padding={2}>
             <Avatar.Root shape="rounded" size="lg">
               <Avatar.Fallback name={g.name} />
@@ -45,8 +46,7 @@ const GenreAsMenu: FC<GenreListProps> = ({selectedGenre, genres, onSelectGenre})
         <Menu.Positioner>
           <MotionComponent duration={duration}>
             <Menu.Content>
-            
-              {genres.map(p => <Menu.Item key={p.id} value={p.slug}
+              {genres.map(p => <Menu.Item key={p.slug} value={p.slug}
                onClick={() => {onSelectGenre(p.slug); setIsOpen(false)}}>{p.name}</Menu.Item>)}
             </Menu.Content>
           </MotionComponent>
@@ -56,11 +56,7 @@ const GenreAsMenu: FC<GenreListProps> = ({selectedGenre, genres, onSelectGenre})
   )
 }
 export type GenreComponentVariants = keyof typeof GanreRenderVariants;
-interface Props {
-  onSelectGenre: (genreSlug: string) => void;
-  selectedGenre: string | null,
-  componentType: GenreComponentVariants
-}
+
 function getSelectedStyls(slug: string, selectedGenre: string | null) : {fontWeight: string, color: string} {
      return slug === selectedGenre ? {fontWeight: "bold", color: "red"}: {fontWeight: "normal", color: "initial"}
 }
@@ -68,9 +64,17 @@ const GanreRenderVariants = {
   list: GenreAsList,
   menu: GenreAsMenu
  } 
-const GenreList: FC<Props> = ({onSelectGenre, selectedGenre, componentType}) => {
+ interface Props {
+  onSelectGenre: (genreSlug: string) => void;
+  selectedGenre: string | null;
+  componentType: GenreComponentVariants;
+  addShowAllItem: boolean
+}
+const GenreList: FC<Props> = ({onSelectGenre, selectedGenre, componentType, addShowAllItem}) => {
  const ComponentToRender = GanreRenderVariants[componentType];
- const {data: genres, error, isLoading} = useGenre();
+ console.log(addShowAllItem);
+ const {data: genres, error, isLoading} = useGenre(addShowAllItem);
+ 
  return  (
     <>
     {isLoading && <Spinner></Spinner>}

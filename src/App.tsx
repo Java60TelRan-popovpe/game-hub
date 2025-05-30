@@ -8,12 +8,14 @@ import { useState } from 'react'
 import PlatformSelector from './components/PlatformSelector'
 import GameQuery from './model/GameQuery'
 import SortSelector from './components/SortSelector'
-import GenreSelector from './components/ui/GenreSelector'
-import {GenreComponentVariants} from './components/GenreList'
+
+function genreNameExists(query: GameQuery){
+  console.log(query.genreName)
+  return !!query.genreName
+}
 
 function App() {
 const [gameQuery, setGameQuery] = useState<GameQuery>({} as GameQuery);
-
   return (
     <Grid templateAreas={{
       base: '"nav" "main" ',
@@ -29,6 +31,7 @@ const [gameQuery, setGameQuery] = useState<GameQuery>({} as GameQuery);
             onSelectGenre={(genreName: string | null) =>
               setGameQuery({ ...gameQuery, genreName })
             }
+            addShowAllItem={genreNameExists(gameQuery)}
           />
         </GridItem>
       </Stack>
@@ -44,8 +47,9 @@ const [gameQuery, setGameQuery] = useState<GameQuery>({} as GameQuery);
         <GenreList componentType='menu'
             selectedGenre={gameQuery.genreName}
             onSelectGenre={(genreName: string | null) =>
-              setGameQuery({ ...gameQuery, genreName })
+              setGameQuery({ ...gameQuery, genreName})
             }
+            addShowAllItem={genreNameExists(gameQuery)}
           />
         </Box>
         <GameGrid gameQuery={gameQuery} />

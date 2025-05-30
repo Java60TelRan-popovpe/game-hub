@@ -3,17 +3,29 @@ import api from '../services/api-client'
 import FetchDataResponse from "../model/fetch-data-response";
 import { AxiosError, AxiosRequestConfig } from "axios";
 
-export default function useData<T>(endpoint: string, config?: AxiosRequestConfig, deps?: any[]): {data: T[] , error: string, isLoading: boolean} {
+export default function useData<T>(endpoint: string, config?: AxiosRequestConfig, deps?: any[]): 
+    {data: T[] , error: string, isLoading: boolean} {
     const [data, setData] = useState<T[]>([])
     const [error, setError] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     useEffect(() => {
         setIsLoading(true);
-    api.get<FetchDataResponse<T>>(endpoint, config)
+    const correctedConfig = getConfigWithoutEmptyParams(config);
+    api.get<FetchDataResponse<T>>(endpoint, correctedConfig)
     .then(res => setData(res.data.results))
     .catch((e:AxiosError) => {
         setError(e.message)
     }).finally(() => setIsLoading(false)) 
     }, deps || []);
     return {data, error, isLoading};
+}
+function getConfigWithoutEmptyParams(config?: AxiosRequestConfig): AxiosRequestConfig | undefined {
+    let result: AxiosRequestConfig | undefined = undefined;
+    if ( config ) {
+        const {params, ...otherOptions} = config;
+        if(params) {
+        result = {params: Object.fromEntries(Object.entries(params).filter(([_,v])=>v)), ...otherOptions}
+        }
+    }
+    return result;
 }
