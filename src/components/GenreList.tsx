@@ -13,6 +13,9 @@ import { FC, useState } from "react";
 import { Genre } from "../model/fetch-genre-types";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import MotionComponent from "./MotionComponent";
+import ParentPlatform from "../model/ParentPlatform";
+import { useSearchOption } from "../hooks/useSearchOption";
+import MenuItem from "../model/MenuItem";
 
 interface GenreListProps {
   selectedGenre: string | null;
@@ -50,16 +53,83 @@ const GenreAsList: FC<GenreListProps> = ({
   );
 };
 
-interface MenuItem {
-  slug: string;
-  name: string;
-}
+const FilterOptionAsList = <T extends MenuItem & {image_background: string}>({
+  selectedItem,
+  items,
+  onSelect
+}: FilterOptionAsMenuProps<T>) => {
+  return (
+    <List.Root listStyle="none" maxHeight="85vh" overflow="auto">
+      {items.map((g) => (
+        <List.Item key={g.slug}>
+          <HStack padding={2}>
+            <Avatar.Root shape="rounded" size="lg">
+              <Avatar.Fallback name={g.name} />
+              <Avatar.Image src={g.image_background} />
+            </Avatar.Root>
+            <Button
+              {...getSelectedStyls(g.slug, selectedItem?.slug || null)}
+              variant={"outline"}
+              borderWidth="0"
+              fontSize={"1.1rem"}
+              paddingX="1"
+              onClick={() => onSelect(g.slug)}
+            >
+              {g.name}
+            </Button>
+          </HStack>
+        </List.Item>
+      ))}
+    </List.Root>
+  );
+};
+
 interface FilterOptionAsMenuProps<T> {
   selectedItem: T | null;
   items: T[];
-  onSelect: (Item: T) => void;
+  onSelect: (slug: string) => void;
   optionName: string;
 }
+interface GenericMenuComponentProps<T> {
+  selectedItem: T | null;
+  onSelect: (slug: string) => void;
+  addShowAllItem: boolean;
+  endpoint: string;
+  optionName: string;
+
+}
+
+interface MenuComponentProps {
+  selectedItem: MenuItem | null;
+  onSelect: (slug: string) => void;
+  addShowAllItem: boolean;
+}
+
+const GenreMenu: FC<MenuComponentProps> = ({selectedItem, onSelect, addShowAllItem}) => {
+  return GenericFilterMenu<MenuItem>({selectedItem, onSelect, addShowAllItem, endpoint: "/genres", optionName:"Genres"})
+}
+
+const GenericFilterMenu  = <T extends MenuItem>({selectedItem, onSelect, addShowAllItem, endpoint, optionName}: GenericMenuComponentProps<T>) => {
+  const {data, error, isLoading} = useSearchOption<T>(addShowAllItem, endpoint)
+  return (
+    <>
+    {isLoading && <Spinner></Spinner>}
+    {error ? (
+      <Text color="red" fontSize={"2.5rem"}>
+        {error}
+      </Text>
+    ) : (
+      <FilterOptionAsMenu<T>
+        items={data}
+        onSelect={onSelect}
+        selectedItem={selectedItem}
+        optionName={optionName}
+      />
+    )}
+  </>
+  )
+}
+
 const FilterOptionAsMenu = <T extends MenuItem>({
   selectedItem,
   items,
@@ -96,7 +166,7 @@ const FilterOptionAsMenu = <T extends MenuItem>({
                   key={p.slug}
                   value={p.slug}
                   onClick={() => {
-                    onSelect(p);
+                    onSelect(p.slug);
                     setIsOpen(false);
                   }}
                 >
@@ -110,6 +180,7 @@ const FilterOptionAsMenu = <T extends MenuItem>({
     </Menu.Root>
   );
 };
+
 
 const GenreAsMenu: FC<GenreListProps> = ({
   selectedGenre,
@@ -174,6 +245,9 @@ const GanreRenderVariants = {
   list: GenreAsList,
   menu: GenreAsMenu,
 };
+
+
+
 interface Props {
   onSelectGenre: (genreSlug: string) => void;
   selectedGenre: string | null;
@@ -187,9 +261,7 @@ const GenreList: FC<Props> = ({
   addShowAllItem,
 }) => {
   const ComponentToRender = GanreRenderVariants[componentType];
-  console.log(addShowAllItem);
-  const { data: genres, error, isLoading } = useGenre(addShowAllItem);
-
+  const { data, error, isLoading } = useGenre(addShowAllItem);
   return (
     <>
       {isLoading && <Spinner></Spinner>}
@@ -199,7 +271,7 @@ const GenreList: FC<Props> = ({
         </Text>
       ) : (
         <ComponentToRender
-          genres={genres}
+          genres={data}
           onSelectGenre={onSelectGenre}
           selectedGenre={selectedGenre}
         />
@@ -209,3 +281,4 @@ const GenreList: FC<Props> = ({
 };
 
 export default GenreList;
+export {GenreMenu};
