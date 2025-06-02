@@ -10,7 +10,6 @@ import GameQuery from './model/GameQuery'
 import SortSelector from './components/SortSelector'
 
 function genreNameExists(query: GameQuery){
-  console.log(query.genreName)
   return !!query.genreName
 }
 

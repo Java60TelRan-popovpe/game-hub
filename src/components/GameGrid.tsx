@@ -4,6 +4,7 @@ import useGame from '../hooks/useGame'
 import { FC } from 'react'
 import ParentPlatform from '../model/ParentPlatform';
 import GameQuery from '../model/GameQuery';
+import LoadingCard from './LoadingCard';
 interface Props {
     gameQuery: GameQuery
 }
@@ -13,7 +14,6 @@ const {error, data: games, isLoading} = useGame(gameQuery);
     
   return (
     <>
-    {isLoading && <Spinner></Spinner>}
     {error? <Text color={"red"} fontSize={"2rem"}>{error}</Text> : <SimpleGrid marginStart={{
       base:8,
       sm: 5,
@@ -29,7 +29,7 @@ const {error, data: games, isLoading} = useGame(gameQuery);
         sm: 2,
         md: 3
     }} gap={5} maxHeight={"80vh"} overflow={"auto"}>
-        {games?.map(g => <GameCard key={g.id} game={g}>
+        {isLoading ? Array.from({length:6},(_,i)=><LoadingCard key={i}/>) : games?.map(g => <GameCard key={g.id} game={g}>
             
             </GameCard>)}
     </SimpleGrid>}
