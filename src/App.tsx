@@ -2,15 +2,13 @@ import "./App.css";
 import { Box, Grid, GridItem, Stack } from "@chakra-ui/react";
 import Nav from "./components/Nav";
 import GameGrid from "./components/GameGrid";
-import GenreList from "./components/GenreList";
 import { useState } from "react";
-import PlatformSelector from "./components/PlatformSelector";
 import GameQuery from "./model/GameQuery";
 import SortSelector from "./components/SortSelector";
-
-function genreNameExists(query: GameQuery) {
-  return !!query.genreName;
-}
+import MenuItem from "./model/MenuItem";
+import GenreFilterMenu from "./components/GenreFilterMenu";
+import PlatformFilterMenu from "./components/PlatformFilterMenu";
+import GenreFilterComponent from "./components/GenreFilterList";
 
 function App() {
   const [gameQuery, setGameQuery] = useState<GameQuery>(
@@ -33,23 +31,23 @@ function App() {
       </GridItem>
       <Stack hideBelow="md">
         <GridItem area="aside" paddingX="5">
-          <GenreList
-            componentType="list"
-            selectedGenre={gameQuery.genreName}
-            onSelectGenre={(genreName: string | null) =>
-              setGameQuery({ ...gameQuery, genreName })
+          <GenreFilterComponent
+            selectedItem={gameQuery.genre || null}
+            onSelect={(genre: MenuItem | null) =>
+              setGameQuery({ ...gameQuery,  genre })
             }
-            addShowAllItem={genreNameExists(gameQuery)}
+            addShowAllItem={Boolean(gameQuery.genre?.slug)}
           />
         </GridItem>
       </Stack>
       <GridItem area="main">
-        <PlatformSelector
-          onSelectPlatform={(platform) =>
+        <PlatformFilterMenu
+          onSelect={(platform) =>
             setGameQuery({ ...gameQuery, platform })
           }
-          selectedPlatform={gameQuery.platform}
-        ></PlatformSelector>
+          selectedItem={gameQuery.platform}
+          addShowAllItem={Boolean(gameQuery.platform?.slug)}
+        />
         <SortSelector
           onSelectOrdering={(option) =>
             setGameQuery({ ...gameQuery, ordering: option })
@@ -57,13 +55,12 @@ function App() {
           selectedOrdering={gameQuery.ordering}
         ></SortSelector>
         <Box display={["none", "inline", "none"]}>
-          <GenreList
-            componentType="menu"
-            selectedGenre={gameQuery.genreName}
-            onSelectGenre={(genreName: string | null) =>
-              setGameQuery({ ...gameQuery, genreName })
+          <GenreFilterMenu
+            selectedItem={gameQuery.genre}
+            onSelect={(genre: MenuItem | null) =>
+              setGameQuery({ ...gameQuery, genre })
             }
-            addShowAllItem={genreNameExists(gameQuery)}
+            addShowAllItem={Boolean(gameQuery.genre?.slug)}
           />
         </Box>
         <GameGrid gameQuery={gameQuery} />
