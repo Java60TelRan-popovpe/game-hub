@@ -29,6 +29,40 @@ const GenreAsList: FC<GenreListProps> = ({selectedGenre, genres, onSelectGenre})
     </List.Root>
   )
 }
+
+interface FilterOptionAsMenuProps<T> {
+  selectedItem: T | null;
+  items: T[];
+  onSelect: (Item: T)=>void;
+  optionName: string
+}
+const FilterOptionAsMenu: FC<FilterOptionAsMenuProps<T>> = ({selectedItem, items, onSelect, optionName}) => {
+  const duration=0.7;
+  const [isOpen, setIsOpen] =  useState<boolean>(false)
+  return (
+    <Menu.Root onExitComplete={() => setIsOpen(false)}>
+      <Menu.Trigger asChild>
+        <Button variant="outline" size="sm" marginBottom={3} onClick={() => setIsOpen(!isOpen)}>
+         { selectedItem || optionName}
+          {isOpen ? <MotionComponent duration={duration}>
+            <FaChevronUp></FaChevronUp>
+          </MotionComponent> :<FaChevronDown></FaChevronDown>}
+        </Button>
+      </Menu.Trigger>
+      <Portal>
+        <Menu.Positioner>
+          <MotionComponent duration={duration}>
+            <Menu.Content>
+              {items.map(p => <Menu.Item key={p.slug} value={p.slug}
+               onClick={() => {onSelect(p.slug); setIsOpen(false)}}>{p.name}</Menu.Item>)}
+            </Menu.Content>
+          </MotionComponent>
+        </Menu.Positioner>
+      </Portal>
+    </Menu.Root>
+  )
+}
+
 const GenreAsMenu: FC<GenreListProps> = ({selectedGenre, genres, onSelectGenre}) => {
   const duration=0.7;
   const [isOpen, setIsOpen] =  useState<boolean>(false)
