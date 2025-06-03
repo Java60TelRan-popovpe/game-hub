@@ -1,16 +1,26 @@
 import { Spinner, Text } from "@chakra-ui/react";
 import MenuItem from "../model/MenuItem";
-import FilterOptionAsMenu from "./GenericDumbMenu";
-import GenericMenuComponentProps from "../model/OptionFilterSmartComponentProps";
 import { useSearchOption } from "../hooks/useSearchOption";
+import OptionFilterDumbComponentProps from "../model/OptionFilterDumbComponentProps";
 
-const GenericSmartFilterMenu = <T extends MenuItem>({
+
+interface Props<T> {
+  selectedItem: T | null;
+  onSelect: (slug: T) => void;
+  addShowAllItem: boolean;
+  endpoint: string;
+  optionName: string;
+  Renderer: React.FC<OptionFilterDumbComponentProps<T>>
+}
+
+const GenericSmartOptionFilter = <T extends MenuItem>({
   selectedItem,
   onSelect,
   addShowAllItem,
   endpoint,
   optionName,
-}: GenericMenuComponentProps<T>) => {
+  Renderer
+}: Props<T>) => {
   const { data, error, isLoading } = useSearchOption<T>(addShowAllItem, endpoint);
   if (isLoading) {
     return <Spinner />;
@@ -23,7 +33,7 @@ const GenericSmartFilterMenu = <T extends MenuItem>({
     );
   }
   return (
-    <FilterOptionAsMenu<T>
+    <Renderer
       items={data}
       onSelect={onSelect}
       selectedItem={selectedItem}
@@ -32,4 +42,5 @@ const GenericSmartFilterMenu = <T extends MenuItem>({
   );
 };
 
-export default GenericSmartFilterMenu
+export default GenericSmartOptionFilter;
+

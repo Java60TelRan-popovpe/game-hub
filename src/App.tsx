@@ -6,14 +6,15 @@ import { useState } from "react";
 import GameQuery from "./model/GameQuery";
 import SortSelector from "./components/SortSelector";
 import MenuItem from "./model/MenuItem";
+import GenreFilterList from "./components/GenreFilterList";
 import GenreFilterMenu from "./components/GenreFilterMenu";
 import PlatformFilterMenu from "./components/PlatformFilterMenu";
-import GenreFilterComponent from "./components/GenreFilterList";
 
 function App() {
   const [gameQuery, setGameQuery] = useState<GameQuery>(
     {} as GameQuery
   );
+  console.log(gameQuery);
   return (
     <Grid
       templateAreas={{
@@ -31,7 +32,7 @@ function App() {
       </GridItem>
       <Stack hideBelow="md">
         <GridItem area="aside" paddingX="5">
-          <GenreFilterComponent
+          <GenreFilterList
             selectedItem={gameQuery.genre || null}
             onSelect={(genre: MenuItem | null) =>
               setGameQuery({ ...gameQuery,  genre })
