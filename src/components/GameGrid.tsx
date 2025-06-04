@@ -2,15 +2,13 @@ import { SimpleGrid, Text} from '@chakra-ui/react'
 import GameCard from './GameCard'
 import useGame from '../hooks/useGame'
 import { FC } from 'react'
-import GameQuery from '../model/GameQuery';
 import LoadingCard from './LoadingCard';
-interface Props {
-    gameQuery: GameQuery
-}
-const GameGrid: FC<Props> = ({gameQuery}) => {
-    
+import useStore from '../data-managment/store';
+
+const GameGrid: FC = () => {
+const gameQuery = useStore(s=>s.gameQuery);
 const {error, data: games, isLoading} = useGame(gameQuery);
-    
+
   return (
     <>
     {error? <Text color={"red"} fontSize={"2rem"}>{error}</Text> : <SimpleGrid marginStart={{

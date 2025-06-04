@@ -11,7 +11,7 @@ interface DataStore  {
     setGenre: (genre: MenuItem) => void;
     setPlatform: (platform: ParentPlatform) => void;
     setOrdering: (ordering: SortOption) => void;
-    setSearchTest: (searchText: string) => void;
+    setSearchText: (searchText: string) => void;
 }
 
 const useStore = create<DataStore>((set)=>({
@@ -19,7 +19,7 @@ const useStore = create<DataStore>((set)=>({
     setGenre: (genre)=>set((state)=>({gameQuery: {...state.gameQuery, genre}})),
     setPlatform: (platform)=>set((state)=>({gameQuery: {...state.gameQuery, platform}})),
     setOrdering: (ordering)=>set((state)=>({gameQuery: {...state.gameQuery, ordering}})),
-    setSearchTest: (searchText)=>set((state)=>({gameQuery: {...state.gameQuery, searchText}}))
+    setSearchText: (searchText)=>set((state)=>({gameQuery: {...state.gameQuery, searchText}}))
 }));
 
 export default useStore

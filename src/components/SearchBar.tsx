@@ -1,11 +1,10 @@
 import { Box, Input, InputGroup } from '@chakra-ui/react'
 import { useRef, FC } from 'react'
 import { LuSearch } from 'react-icons/lu'
-interface Props {
-    onSubmitText: (text: string) => void
-}
-const SearchBar: FC<Props> = ({onSubmitText}) => {
+import useStore from '../data-managment/store'
+const SearchBar: FC= () => {
     const inputElem = useRef<HTMLInputElement>(null)
+    const onSubmitText = useStore(s=>s.setSearchText);
   return (
     <Box width="100%"  as="form" onSubmit={(event) => {
         event.preventDefault();

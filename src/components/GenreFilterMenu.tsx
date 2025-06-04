@@ -1,18 +1,16 @@
 import { FC } from "react";
-import FilterComponentProps from "../model/FilterComponentProps";
 import MenuItem from "../model/MenuItem";
 import GenericSmartOptionFilter from "./GenericSmartOptionFilter";
 import GenericDumbMenu from "./GenericDumbMenu";
+import useStore from "../data-managment/store";
 
-const GenreFilterMenu: FC<FilterComponentProps> = ({
-  selectedItem,
-  onSelect,
-  addShowAllItem,
-}) => {
+const GenreFilterMenu: FC = () => {
+  const selectedItem = useStore(s=>s.gameQuery.genre);
+  const onSelect = useStore(s=>s.setGenre);
   return GenericSmartOptionFilter<MenuItem>({
     selectedItem,
     onSelect,
-    addShowAllItem,
+    addShowAllItem: Boolean(selectedItem?.slug),
     endpoint: "/genres",
     optionName: "Genres",
     Renderer: GenericDumbMenu
