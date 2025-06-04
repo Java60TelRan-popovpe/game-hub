@@ -29,7 +29,7 @@ const FilterOptionAsMenu = <T extends MenuItem>({
             marginBottom={3}
             onClick={() => setIsOpen(!isOpen)}
           >
-            {selectedItem?.slug || optionName}
+            {selectedItem?.name || optionName}
             {isOpen ? (
               <MotionComponent duration={duration}>
                 <FaChevronUp></FaChevronUp>
