@@ -3,6 +3,7 @@ import GenericSmartOptionFilter from "./GenericSmartOptionFilter";
 import GenericDumbMenu from "./GenericDumbMenu";
 import ParentPlatform from "../model/ParentPlatform";
 import useStore from "../data-managment/store";
+import useSearchOption from "../hooks/useSearchOption";
 
 const PlatformFilterMenu: FC = () => {
   const selectedItem = useStore(s=>s.gameQuery.platform);
@@ -13,7 +14,8 @@ const PlatformFilterMenu: FC = () => {
     addShowAllItem: Boolean(selectedItem?.slug),
     endpoint: "/platforms/lists/parents",
     optionName: "Platforms",
-    Renderer: GenericDumbMenu
+    Renderer: GenericDumbMenu,
+    getMenuData: useSearchOption
   });
 };
 
