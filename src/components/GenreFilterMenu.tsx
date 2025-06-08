@@ -11,11 +11,9 @@ const GenreFilterMenu: FC = () => {
   return GenericSmartOptionFilter<MenuItem>({
     selectedItem,
     onSelect,
-    addShowAllItem: Boolean(selectedItem?.slug),
-    endpoint: "/genres",
     optionName: "Genres",
     Renderer: GenericDumbMenu,
-    getMenuData: useSearchOption
+    useMenuData: ()=>useSearchOption({source: "fetch", param: {addShowAllItem: String(Boolean(selectedItem?.slug)), apiEndPoint: "/genres", }})
   });
 };
 

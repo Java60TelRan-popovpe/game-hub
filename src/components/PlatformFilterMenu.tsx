@@ -11,11 +11,9 @@ const PlatformFilterMenu: FC = () => {
   return GenericSmartOptionFilter<ParentPlatform>({
     selectedItem,
     onSelect,
-    addShowAllItem: Boolean(selectedItem?.slug),
-    endpoint: "/platforms/lists/parents",
     optionName: "Platforms",
     Renderer: GenericDumbMenu,
-    getMenuData: useSearchOption
+    useMenuData: ()=>useSearchOption({source: "fetch", param: {addShowAllItem: String(Boolean(selectedItem?.slug)), apiEndPoint: "/platforms/lists/parents" }})
   });
 };
 

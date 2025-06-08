@@ -1,31 +1,24 @@
 import { Spinner, Text } from "@chakra-ui/react";
 import MenuItem from "../model/MenuItem";
 import OptionFilterDumbComponentProps from "../model/OptionFilterDumbComponentProps";
-import useSearchOption from "../hooks/useSearchOption";
-import { GetOptionFilterFunction } from "../model/GetSearchOptionsFuncParam";
 
 
 interface Props<T> {
   selectedItem: T | null;
   onSelect: (slug: T) => void;
-  addShowAllItem: boolean;
-  endpoint: string;
   optionName: string;
   Renderer: React.FC<OptionFilterDumbComponentProps<T>>;
-  getMenuData: GetOptionFilterFunction
+  useMenuData: ()=>{data: T[], error: string, isLoading: boolean}
 }
 
 const GenericSmartOptionFilter = <T extends MenuItem>({
   selectedItem,
   onSelect,
-  addShowAllItem,
-  endpoint,
   optionName,
   Renderer,
-  getMenuData
+  useMenuData
 }: Props<T>) => {
-  //const { data, error, isLoading } = useSearchOption<T>({source: "fetch", param: {addShowAllItem: String(addShowAllItem), apiEndPoint: endpoint }});
-  const { data, error, isLoading } = getMenuData<T>({source: "fetch", param: {addShowAllItem: String(addShowAllItem), apiEndPoint: endpoint }});
+  const { data, error, isLoading } = useMenuData();
   if (isLoading) {
     return <Spinner />;
   }
