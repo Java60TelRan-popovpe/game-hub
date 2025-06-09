@@ -1,15 +1,16 @@
 import { Spinner, Text } from "@chakra-ui/react";
 import MenuItem from "../model/MenuItem";
 import OptionFilterDumbComponentProps from "../model/OptionFilterDumbComponentProps";
-import { useQuery} from '@tanstack/react-query'
-import { groupOptions } from "../hooks/useData";
+import { useQuery, UseQueryOptions }  from '@tanstack/react-query'
+import {  } from '@tanstack/react-query';
+type GroupOptionsReturn<T extends MenuItem> = UseQueryOptions<T[], Error, T[], [string]>
 
 interface Props<T extends MenuItem> {
   selectedItem: T | null;
   onSelect: (slug: T) => void;
   optionName: string;
   Renderer: React.FC<OptionFilterDumbComponentProps<T>>;
-  apiQueryOptions: ()=>ReturnType<typeof groupOptions<T>>;
+  apiQueryOptions: ()=>GroupOptionsReturn<T>;
 }
 
 const GenericSmartOptionFilter = <T extends MenuItem>({

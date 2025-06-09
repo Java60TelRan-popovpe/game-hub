@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import api from "../services/api-client";
 import FetchDataResponse from "../model/fetch-data-response";
 import { AxiosError, AxiosRequestConfig } from "axios";
-import { Menu } from "@chakra-ui/react";
 import MenuItem from "../model/MenuItem";
-import { queryOptions } from "@tanstack/react-query";
-import bg_img from "../../src/assets/all_image.jpeg";
+import { queryOptions, UseQueryOptions } from "@tanstack/react-query";
 
 export default function useData<T>(
   endpoint: string,
@@ -46,15 +44,15 @@ function getConfigWithoutEmptyParams(
 
 export function groupOptions<T extends MenuItem>(
   endpoint: string,
-  addClearFilterItem: boolean
-) {
+  createClearItem?: () => T
+): UseQueryOptions<T[], Error, T[], [string]> {
   return queryOptions({
     queryKey: [endpoint],
     queryFn: () =>
       api.get<FetchDataResponse<T>>(endpoint).then((res) => res.data.results),
     select: (data) =>
-      addClearFilterItem
-        ? [{ name: "Clear", slug: "", image_background: bg_img }, ...data]
+        createClearItem
+        ? [createClearItem() , ...data]
         : data,
     staleTime: 3600 * 1000 * 24,
   });
