@@ -4,6 +4,7 @@ import GenericDumbMenu from "./GenericDumbMenu";
 import ParentPlatform from "../model/ParentPlatform";
 import useStore from "../data-managment/store";
 import useSearchOption from "../hooks/useSearchOption";
+import { groupOptions } from "../hooks/useData";
 
 const PlatformFilterMenu: FC = () => {
   const selectedItem = useStore(s=>s.gameQuery.platform);
@@ -13,7 +14,8 @@ const PlatformFilterMenu: FC = () => {
     onSelect,
     optionName: "Platforms",
     Renderer: GenericDumbMenu,
-    useMenuData: ()=>useSearchOption({source: "fetch", param: {addShowAllItem: String(Boolean(selectedItem?.slug)), apiEndPoint: "/platforms/lists/parents" }})
+    apiQueryOptions: ()=>groupOptions("/platforms/lists/parents", Boolean(selectedItem?.slug)),
+    //useMenuData: ()=>useSearchOption({source: "fetch", param: {addShowAllItem: String(Boolean(selectedItem?.slug)), apiEndPoint: "/platforms/lists/parents" }})
   });
 };
 

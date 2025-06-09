@@ -1,33 +1,61 @@
 import { useEffect, useState } from "react";
-import api from '../services/api-client'
+import api from "../services/api-client";
 import FetchDataResponse from "../model/fetch-data-response";
 import { AxiosError, AxiosRequestConfig } from "axios";
 import { Menu } from "@chakra-ui/react";
 import MenuItem from "../model/MenuItem";
+import { queryOptions } from "@tanstack/react-query";
+import bg_img from "../../src/assets/all_image.jpeg";
 
-export default function useData<T>(endpoint: string, config?: AxiosRequestConfig, deps?: any[]): 
-    {data: T[] , error: string, isLoading: boolean} {
-    const [data, setData] = useState<T[]>([])
-    const [error, setError] = useState<string>("");
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    useEffect(() => {
-        setIsLoading(true);
+export default function useData<T>(
+  endpoint: string,
+  config?: AxiosRequestConfig,
+  deps?: any[]
+): { data: T[]; error: string; isLoading: boolean } {
+  const [data, setData] = useState<T[]>([]);
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  useEffect(() => {
+    setIsLoading(true);
     const correctedConfig = getConfigWithoutEmptyParams(config);
-    api.get<FetchDataResponse<T>>(endpoint, correctedConfig)
-    .then(res => setData(res.data.results))
-    .catch((e:AxiosError) => {
-        setError(e.message)
-    }).finally(() => setIsLoading(false)) 
-    }, deps || []);
-    return {data, error, isLoading};
+    api
+      .get<FetchDataResponse<T>>(endpoint, correctedConfig)
+      .then((res) => setData(res.data.results))
+      .catch((e: AxiosError) => {
+        setError(e.message);
+      })
+      .finally(() => setIsLoading(false));
+  }, deps || []);
+  return { data, error, isLoading };
 }
-function getConfigWithoutEmptyParams(config?: AxiosRequestConfig): AxiosRequestConfig | undefined {
-    let result: AxiosRequestConfig | undefined = undefined;
-    if ( config ) {
-        const {params, ...otherOptions} = config;
-        if(params) {
-        result = {params: Object.fromEntries(Object.entries(params).filter(([_,v])=>v)), ...otherOptions}
-        }
+function getConfigWithoutEmptyParams(
+  config?: AxiosRequestConfig
+): AxiosRequestConfig | undefined {
+  let result: AxiosRequestConfig | undefined = undefined;
+  if (config) {
+    const { params, ...otherOptions } = config;
+    if (params) {
+      result = {
+        params: Object.fromEntries(Object.entries(params).filter(([_, v]) => v)),
+        ...otherOptions,
+      };
     }
-    return result;
+  }
+  return result;
+}
+
+export function groupOptions<T extends MenuItem>(
+  endpoint: string,
+  addClearFilterItem: boolean
+) {
+  return queryOptions({
+    queryKey: [endpoint],
+    queryFn: () =>
+      api.get<FetchDataResponse<T>>(endpoint).then((res) => res.data.results),
+    select: (data) =>
+      addClearFilterItem
+        ? [{ name: "Clear", slug: "", image_background: bg_img }, ...data]
+        : data,
+    staleTime: 3600 * 1000 * 24,
+  });
 }

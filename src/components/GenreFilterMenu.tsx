@@ -3,7 +3,7 @@ import MenuItem from "../model/MenuItem";
 import GenericSmartOptionFilter from "./GenericSmartOptionFilter";
 import GenericDumbMenu from "./GenericDumbMenu";
 import useStore from "../data-managment/store";
-import useSearchOption from "../hooks/useSearchOption";
+import { groupOptions } from "../hooks/useData";
 
 const GenreFilterMenu: FC = () => {
   const selectedItem = useStore(s=>s.gameQuery.genre);
@@ -13,7 +13,7 @@ const GenreFilterMenu: FC = () => {
     onSelect,
     optionName: "Genres",
     Renderer: GenericDumbMenu,
-    useMenuData: ()=>useSearchOption({source: "fetch", param: {addShowAllItem: String(Boolean(selectedItem?.slug)), apiEndPoint: "/genres", }})
+    apiQueryOptions: ()=>groupOptions("/genres", Boolean(selectedItem?.slug)),
   });
 };
 
